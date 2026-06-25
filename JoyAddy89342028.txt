@@ -1,0 +1,140 @@
+Joy Naa Ayi-Kooley Addy
+89342028
+Cohort A
+
+MariaDB [(none)]> create database ProjectDB;
+Query OK, 1 row affected (0.017 sec)
+
+MariaDB [(none)]> use ProjectDB;
+Database changed
+MariaDB [ProjectDB]> create table Employee( empNo varchar(5) primary key not null, fName varchar(30),lName varchar(30), address varchar(100),DOB date, sex char(1) check(sex in ('M','F')),position varchar(30) check(position in('Manager','Team Leader','Analyst','Software Developer')),deptNo int);
+Query OK, 0 rows affected (0.069 sec)
+
+MariaDB [ProjectDB]> create table Department(deptNo int primary key not null,deptName varchar(50),mgrEmpNo varchar(5));
+Query OK, 0 rows affected (0.019 sec)
+
+MariaDB [ProjectDB]> create table Project(projNo varchar(10) primary key not null,projName varchar(50),deptNo int, foreign key (deptNo) references Department(deptNo));
+Query OK, 0 rows affected (0.010 sec)
+
+MariaDB [ProjectDB]> create table WorksOn(empNo varchar(5), projNo varchar(10), dateWorked date,hoursWorked int check(hoursWorked between 0 and 40),primary key (empNo, projNo, dateWorked),foreign key (empNo) references Employee(empNo),foreign key (projNo) references Project(projNo));
+Query OK, 0 rows affected (0.022 sec)
+
+MariaDB [ProjectDB]> alter table Employee add constraint fk_emp_dept foreign key (deptNo) references Department(deptNo);
+Query OK, 0 rows affected (0.042 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [ProjectDB]> alter table Department add constraint fk_dept_manager foreign key (mgrEmpNo) references Employee(empNo);
+Query OK, 0 rows affected (0.034 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [ProjectDB]> create view FemaleManagerProjView as select project.projNo,project.projName,department.deptNo,employee.empNo,employee.fName,employee.lName from Project join Department on project.deptNo = department.deptNo join Employee on employee.empNo = department.mgrEmpNo where employee.sex = 'F' order by project.projNo;
+Query OK, 0 rows affected (0.029 sec)
+
+MariaDB [ProjectDB]>  INSERT INTO Department VALUES (1,'Software Development',NULL), (2,'Data Analytics',NULL), (3,'Cyber Security',NULL), (4,'Network Administration',NULL),(5,'Quality Assurance',NULL);
+Query OK, 5 rows affected (0.013 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [ProjectDB]> INSERT INTO Employee VALUES('E1','Ama','Mensah','Accra','1990-05-12','F','Manager',1),('E2','Kwame','Asante','Kumasi','1988-08-23','M','Manager',2),('E3','Akosua','Boateng','Takoradi','1992-01-17','F','Manager',3),('E4','Kofi','Owusu','Cape Coast','1991-11-09','M','Manager',4),('E5','Abena','Darko','Tamale','1989-06-30','F','Manager',5),('E6','Yaw','Osei','Accra','1995-03-22','M','Team Leader',1),('E7','Efua','Agyeman','Kumasi','1994-09-14','F','Team Leader',2),('E8','Kojo','Addo','Takoradi','1993-12-18','M','Analyst',3),('E9','Akua','Sarpong','Cape Coast','1996-04-25','F','Analyst',4),('E10','Nana','Badu','Tamale','1992-07-11','M','Software Developer',5),('E11','Yaa','Frimpong','Accra','1997-10-05','F','Software Developer',1),('E12','Kwaku','Mensimah','Kumasi','1994-02-28','M','Software Developer',2),('E13','Mavis','Adjei','Takoradi','1996-08-13','F','Analyst',3),('E14','Daniel','Antwi','Cape Coast','1993-05-20','M','Team Leader',4),('E15','Linda','Gyasi','Tamale','1995-01-08','F','Software Developer',5);
+Query OK, 15 rows affected (0.013 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+MariaDB [ProjectDB]> UPDATE Department SET mgrEmpNo='E1' WHERE deptNo=1;
+Query OK, 1 row affected (0.017 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [ProjectDB]> UPDATE Department SET mgrEmpNo='E2' WHERE deptNo=2;
+Query OK, 1 row affected (0.004 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [ProjectDB]> UPDATE Department SET mgrEmpNo='E3' WHERE deptNo=3;
+Query OK, 1 row affected (0.002 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [ProjectDB]> UPDATE Department SET mgrEmpNo='E4' WHERE deptNo=4;
+Query OK, 1 row affected (0.009 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [ProjectDB]> UPDATE Department SET mgrEmpNo='E5' WHERE deptNo=5;
+Query OK, 1 row affected (0.007 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [ProjectDB]> INSERT INTO Project VALUES('SCCS','Student Course Control System',1),('PMS','Payroll Management System',1),('HRP','Human Resource Portal',1),('DWH','Data Warehouse',2),('BIA','Business Intelligence App',2),('DMP','Data Mining Project',2),('IDS','Intrusion Detection System',3),('VMS','Vulnerability Management System',3),('SOC','Security Operations Center',3),('NMS','Network Monitoring System',4),('VPN','Virtual Private Network',4),('FWS','Firewall Solution',4),('TAS','Testing Automation Suite',5),('QMS','Quality Management System',5),('BUG','Bug Tracking Platform',5);
+Query OK, 15 rows affected (0.009 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+MariaDB [ProjectDB]> INSERT INTO WorksOn VALUES('E1','SCCS','2025-01-05',35),('E1','SCCS','2025-01-12',30),('E2','DWH','2025-01-06',32),('E3','IDS','2025-01-07',38),('E4','NMS','2025-01-08',30),('E5','TAS','2025-01-09',40),('E6','PMS','2025-01-10',25),('E7','BIA','2025-01-11',28),('E8','VMS','2025-01-12',20),('E9','VPN','2025-01-13',22),('E10','QMS','2025-01-14',36),('E11','HRP','2025-01-15',18),('E12','DMP','2025-01-16',27),('E13','SOC','2025-01-17',24),('E14','FWS','2025-01-18',31),('E15','BUG','2025-01-19',29);
+Query OK, 16 rows affected (0.008 sec)
+Records: 16  Duplicates: 0  Warnings: 0
+
+MariaDB [ProjectDB]> create view EmployeeProjHourView as select Employee.empNo,Employee.fName,Employee.lName,Project.projName,WorksOn.hoursWorked from Employee join WorksOn on Employee.empNo = WorksOn.empNo join Project on Project.projNo = WorksOn.projNo;
+Query OK, 0 rows affected (0.017 sec)
+
+MariaDB [ProjectDB]> create view EmpProject (empNo, projNo, totalHours) AS SELECT w.empNo, w.projNo, SUM(hoursWorked) FROM Employee e, Project p, WorksOn w WHERE e.empNo = w.empNo AND p.projNo = w.projNo GROUP BY w.empNo, w.projNo;
+Query OK, 0 rows affected (0.023 sec)
+
+MariaDB [ProjectDB]> select * from EmpProject;
++-------+--------+------------+
+| empNo | projNo | totalHours |
++-------+--------+------------+
+| E1    | SCCS   |         65 |
+| E10   | QMS    |         36 |
+| E11   | HRP    |         18 |
+| E12   | DMP    |         27 |
+| E13   | SOC    |         24 |
+| E14   | FWS    |         31 |
+| E15   | BUG    |         29 |
+| E2    | DWH    |         32 |
+| E3    | IDS    |         38 |
+| E4    | NMS    |         30 |
+| E5    | TAS    |         40 |
+| E6    | PMS    |         25 |
+| E7    | BIA    |         28 |
+| E8    | VMS    |         20 |
+| E9    | VPN    |         22 |
++-------+--------+------------+
+
+MariaDB [ProjectDB]> select projNo from EmpProject where projNo='SCCS';
++--------+
+| projNo |
++--------+
+| SCCS   |
++--------+
+1 row in set (0.010 sec)
+
+MariaDB [ProjectDB]> select count(projNo) from EmpProject where empNo='E1';
++---------------+
+| count(projNo) |
++---------------+
+|             1 |
++---------------+
+1 row in set (0.001 sec)
+
+MariaDB [ProjectDB]> select empNo,totalHours from EmpProject group by empNo;
++-------+------------+
+| empNo | totalHours |
++-------+------------+
+| E1    |         65 |
+| E10   |         36 |
+| E11   |         18 |
+| E12   |         27 |
+| E13   |         24 |
+| E14   |         31 |
+| E15   |         29 |
+| E2    |         32 |
+| E3    |         38 |
+| E4    |         30 |
+| E5    |         40 |
+| E6    |         25 |
+| E7    |         28 |
+| E8    |         20 |
+| E9    |         22 |
++-------+------------+
+15 rows in set (0.002 sec)
+
+7.28
+
+A materialized view provides a faster way of handling queries as compared to recomputing the view each time, by storing the query results on a disk. To maintain the view Expensive Parts as a materialized view, there would have to be updates every time the Part table changes. SQL commands like insert, update and delete are used to make corresponding changes. For instance, if a new part is inserted and it passes the constraint of partCost>1000,its partNo is added to ExpensiveParts. 
+Without being able to access the Part table, which is the base table, the materialized view can only make changes which are clear from the modified row alone, like inserting a new expensive part. To perform actions like deleting a row or reducing the part cost the base table must be checked, because another contract for the same partNo can have a greater cost.
+
+
+
